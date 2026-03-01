@@ -15,11 +15,23 @@ def process_upload(filename: str, content: bytes) -> dict:
     
     uuid_object = str(uuid.uuid4())
     
-    dictionary_zero[uuid_object] = reader
+    dictionary_zero[uuid_object] =  {
+        "id": uuid_object,
+        "nome": filename,
+        "colunas": list(reader.columns),
+        "shape": reader.shape,
+        "data": reader  
+    }
     
     return {
         "id": uuid_object,
         "nome": filename,
         "colunas": list(reader.columns),
-        "shape": reader.shape
+        "shape": reader.shape,
     }
+
+def list_datasets():
+    return [
+        {k: v for k, v in dataset.items() if k != "data"}
+        for dataset in dictionary_zero.values()
+        ]
