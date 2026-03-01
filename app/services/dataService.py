@@ -1,6 +1,7 @@
 import pandas as pd
 from io import StringIO
 import uuid
+from fastapi import HTTPException
 
 dictionary_zero = {}
 
@@ -35,3 +36,21 @@ def list_datasets():
         {k: v for k, v in dataset.items() if k != "data"}
         for dataset in dictionary_zero.values()
         ]
+def get_dataset(id):
+    dataset = dictionary_zero.get(id)
+    
+    if dataset is None:
+        raise HTTPException(status_code=404, detail="data set não encontrado")
+        
+    return {k: v for k,v in dataset.items() if k!="data"}
+
+def preview_dataset(id: str, rows: int):
+    dataset = dictionary_zero.get(id)
+    
+    if dataset is None:
+        raise HTTPException(status_code=404, detail="data set não encontrado")
+    
+    df = dataset['data']
+    
+    return df.head(rows).to_dict(orient = 'records')
+    
