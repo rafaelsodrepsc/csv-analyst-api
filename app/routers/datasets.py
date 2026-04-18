@@ -1,7 +1,11 @@
+from pydantic import BaseModel
 from fastapi import APIRouter, UploadFile
 from services import dataService
 
 router = APIRouter()
+
+class QueryRequest(BaseModel):
+    pergunta: str
 
 @router.post("/uploadfile")
 async def upload_file(file: UploadFile):
@@ -19,3 +23,7 @@ async def get_dataset(id : str):
 @router.get('/datasets/{id}/preview')
 async def preview_dataset(id: str, rows: int = 5):
     return dataService.preview_dataset(id, rows)
+
+@router.post("/datasets/{id}/query")
+async def query_dataset(id: str, body: QueryRequest):
+    return dataService.query_dataset(id, body.pergunta)
